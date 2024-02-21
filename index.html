@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý Sinh viên</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      form {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Quản lý Sinh viên</h2>
+
+    <form id="studentForm">
+      <label for="studentID">Mã SV:</label>
+      <input type="text" id="studentID" required /><br />
+
+      <label for="fullName">Họ và tên:</label>
+      <input type="text" id="fullName" required /><br />
+
+      <label for="dob">Ngày sinh:</label>
+      <input type="date" id="dob" required /><br />
+
+      <label for="class">Lớp học:</label>
+      <input type="text" id="class" required /><br />
+
+      <label for="gpa">Điểm GPA:</label>
+      <input type="number" id="gpa" step="0.01" required /><br />
+
+      <button type="button" onclick="addStudent()">Thêm/ Sửa Sinh viên</button>
+      <div>Lưu ý: Cần nhập đủ thông tin trước khi thêm dữ liệu sinh viên !<div>
+    </form>
+
+    <table id="studentTable">
+      <tr>
+        <th>Mã SV</th>
+        <th>Họ và tên</th>
+        <th>Ngày sinh</th>
+        <th>Lớp học</th>
+        <th>Điểm GPA</th>
+        <th>Thao tác</th>
+      </tr>
+    </table>
+
+    <script>
+      let students = [];
+
+      function addStudent() {
+        const studentID = document.getElementById("studentID").value;
+        const fullName = document.getElementById("fullName").value;
+        const dob = document.getElementById("dob").value;
+        const studentClass = document.getElementById("class").value;
+        const gpa = document.getElementById("gpa").value;
+      
+
+        const existedStudent = students.find((s) => s.studentID === studentID);
+
+        if (existedStudent) {
+          existedStudent.studentID = studentID;
+          existedStudent.fullName = fullName;
+          existedStudent.dob = dob;
+          existedStudent.studentClass = studentClass;
+          existedStudent.gpa = gpa;
+          displayStudents();
+          clearForm();
+        } else {
+          const student = {
+            studentID,
+            fullName,
+            dob,
+            studentClass,
+            gpa,
+          };
+
+          students.push(student);
+          displayStudents();
+          clearForm();
+        }
+        console.log(students)
+      }
+
+      function displayStudents() {
+        const table = document.getElementById("studentTable");
+        const tbody =
+          table.getElementsByTagName("tbody")[1] || table.createTBody();
+
+        tbody.innerHTML = "";
+
+        students.forEach((student) => {
+          const row = tbody.insertRow();
+          for (const key in student) {
+            const cell = row.insertCell();
+            cell.textContent = student[key];
+          }
+
+          const editCell = row.insertCell();
+          const editButton = document.createElement("button");
+          editButton.textContent = "Sửa";
+          editButton.onclick = () => editStudent(student.studentID);
+          editCell.appendChild(editButton);
+        });
+        //table.insertAdjacentElement("beforeend", tbody);
+      }
+
+      function editStudent(studentID) {
+        console.log(`edited`)
+        const student = students.find((s) => s.studentID === studentID);
+
+        document.getElementById("studentID").value = student.studentID;
+        document.getElementById("fullName").value = student.fullName;
+        document.getElementById("dob").value = student.dob;
+        document.getElementById("class").value = student.studentClass;
+        document.getElementById("gpa").value = student.gpa;
+
+        // Remove the student from the array
+        // students = students.filter((s) => s.studentID !== studentID);
+
+         displayStudents();
+      }
+
+      function clearForm() {
+        document.getElementById("studentID").value = "";
+        document.getElementById("fullName").value = "";
+        document.getElementById("dob").value = "";
+        document.getElementById("class").value = "";
+        document.getElementById("gpa").value = "";
+      }
+    </script>
+  </body>
+</html>
